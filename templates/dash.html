@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        input[type="submit"] {
+            display: block;
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        .message-container {
+            margin-top: 20px;
+        }
+
+        .message-container label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .message-container textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard</h1>
+        <p><strong>Name:</strong> {{ person.name }}</p>
+        <p><strong>Email:</strong> {{ person.email }}</p>
+        <p><strong>Amount:</strong> {{ person.amount }}</p>
+
+        <form id="contact-form">
+            <input type="hidden" name="name" value="{{ person.name }}">
+            <input type="hidden" name="email" value="{{ person.email }}">
+            <input type="hidden" name="amount" value="{{ person.amount }}">
+            
+            <div class="message-container">
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" rows="4" placeholder="Write your message here..."></textarea>
+            </div>
+            <input type="submit" id="submit-btn" value="Submit">
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('contact-form');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            fetch('https://script.google.com/macros/s/AKfycby5EZTMzBJsgKce-2-SN1gH3K-e1xhD3uLBPUd_Toif81HvRlGhKAm4PY4IkrEzQoTj/exec', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Thank you! Your form is submitted successfully.");
+                    form.reset(); // Reset the form
+                    // Close the window after the alert is closed
+                    window.close();
+                } else {
+                    alert("There was a problem submitting your form. Please try again later.");
+                }
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                alert("There was a problem submitting your form. Please try again later.");
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Falcon X</title>
+    <link rel="stylesheet" href="../static/css/index.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Falcon X</h1>
+    </header>
+    <main>
+        <div id="home" class="section">
+            <div class="container">
+                <h2>Welcome to Falcon X</h2>
+                <p>Welcome to Falcon X, your premier destination for cutting-edge technology solutions and services.</p>
+                <p>At Falcon X, we strive to revolutionize the way businesses operate by providing innovative solutions tailored to meet your specific needs.</p>
+                <p>Whether you're looking to streamline your workflow, enhance productivity, or elevate customer experience, Falcon X has you covered.</p>
+                <p>Our team of experts is dedicated to delivering top-notch services and support, ensuring your success every step of the way.</p>
+                <p>Explore our website to learn more about our products, services, and how Falcon X can help propel your business to new heights.</p>
+            </div>
+        </div>
+        
+        <div id="data" class="section">
+            <div class="container">
+                <h2>Data</h2>
+                <div class="container_animated">
+                    <form id="upload-form" enctype="multipart/form-data">
+                        <div class="file-input-container">
+                            <!-- Choose file input -->
+                            <input type="file" id="csv-file" name="csv-file" accept=".csv" style="display: none;">
+                            <label for="csv-file" id="choose-file-btn">Choose CSV File</label>
+                            <button id="upload-btn" type="button">Upload CSV</button>
+                        </div>
+                    </form>
+                    <!-- Centered Button -->
+                    <div style="text-align: center;">
+                        <button id="send-email-btn" type="button" style="display: none;">Send Emails</button>
+                    </div>
+                    <button id="download-csv-btn" type="button">Download Updated CSV</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="../static/js/index.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chooseFileBtn = document.getElementById('choose-file-btn');
+            const fileInput = document.getElementById('csv-file');
+            const uploadBtn = document.getElementById('upload-btn');
+            const sendEmailBtn = document.getElementById('send-email-btn');
+
+            // Event listener for "Choose CSV File" button
+            chooseFileBtn.addEventListener('click', function() {
+                fileInput.click();
+            });
+
+            // Event listener for file input change
+            fileInput.addEventListener('change', function() {
+                // Disable "Choose CSV File" button after file selection
+                chooseFileBtn.disabled = true;
+            });
+
+            // Event listener for "Upload CSV" button
+            uploadBtn.addEventListener('click', function() {
+                const selectedFile = fileInput.files[0];
+                if (selectedFile) {
+                    // Check if the selected file is a CSV file
+                    const fileName = selectedFile.name;
+                    const fileExtension = fileName.split('.').pop().toLowerCase();
+                    if (fileExtension === 'csv') {
+                        // Handle file upload process
+                        alert('File uploaded successfully.');
+                        // Show "Send Emails" button
+                        sendEmailBtn.style.display = 'block';
+                    } else {
+                        alert('Please select a CSV file.');
+                    }
+                } else {
+                    alert('Please choose a file.');
+                }
+            });
+
+            // Event listener for "Send Emails" button
+            sendEmailBtn.addEventListener('click', function() {
+                // Here you can add logic to send emails
+                alert('Your emails have been sent.');
+            });
+        });
+    </script>
+</body>
+</html>
