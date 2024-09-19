@@ -1,22 +1,27 @@
 from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for
 import csv
 import os
-import requests
-import shutil 
-from prac import send_email  # Importing the send_email function from prac.py
+from prac import send_email  
+from dotenv import load_dotenv, set_key, dotenv_values
 
 app = Flask(__name__)
 
+load_dotenv()
+
+# Ensure temp.csv exists
+if not os.path.exists('temp.csv'):
+    with open('temp.csv', 'w', newline='') as csvfile:
+        fieldnames = ['name', 'email', 'amount', 'attachment']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-
-@app.route('/')
+@app.route('/data')
 def data():
     return render_template('data.html')
-
 
 def get_person_details(email):
     with open('temp.csv', 'r') as csvfile:
@@ -28,17 +33,15 @@ def get_person_details(email):
                         'name': row['name'],
                         'email': row['email'],
                         'amount': row['amount'],
-                        
                     }
                 }
-    return None 
+    return None
 
 @app.route('/response')
 def response_page():
     email = request.args.get('email')
     person_details = get_person_details(email)
     return render_template('response.html', email=email)
-
 
 @app.route('/dash')
 def dash_page():
@@ -48,21 +51,6 @@ def dash_page():
         return render_template('dash.html', person=person_details['person'])
     else:
         return render_template('error.html', message="Person details not found for the provided email.")
-
-
-# @app.route('/submit_form', methods=['POST'])
-# def submit_form():
-#     # Extract form data
-#     name = request.form['name']
-#     email = request.form['email']
-#     amount = request.form.get('amount', '')  # Handle missing 'amount' field gracefully
-
-#     # Send data to Google Sheet
-#     sheet_url = 'https://script.google.com/macros/s/AKfycbxQizsudJ-l316zTHenOtddvZ4kWo8kFg6OI1qCvfl0a1_pMK-F8ZbE0q760NPcW_jfRA/exec'
-#     payload = {'name': name, 'email': email, 'amount': amount}
-#     response = requests.post(sheet_url, data=payload)
-
-    return redirect(url_for('index'))  # Redirect to index page after submission
 
 @app.route('/upload', methods=['POST'])
 def upload_csv():
@@ -97,10 +85,7 @@ def trigger_send_email():
         return jsonify({'error': 'File not found.'}), 404
     except Exception as e:
         return jsonify({'error': f'An error occurred: {e}'}), 500
-    else:  # This should be aligned with the try block, not the except block
-        return jsonify({'success': True})
-
-
+    return jsonify({'success': True})
 
 @app.route('/get_csv_data')
 def get_csv_data():
@@ -127,6 +112,27 @@ def download_csv():
         return send_file('temp.csv', as_attachment=True)
     except FileNotFoundError:
         return jsonify({'error': 'File not found.'}), 404
+
+@app.route('/set_email_credentials', methods=['POST'])
+def set_email_credentials():
+    data = request.json
+    email_id = data.get('email_id')
+    password_key = data.get('password_key')
+    if not email_id or not password_key:
+        return jsonify({'error': 'Email ID and Password Key are required.'}), 400
+    set_key('.env', 'email', email_id)
+    set_key('.env', 'password', password_key)
+    return jsonify({'success': True})
+
+@app.route('/check_email_credentials', methods=['GET'])
+def check_email_credentials():
+    env_vars = dotenv_values(".env")
+    email_id = env_vars.get('email')
+    password_key = env_vars.get('password')
+    if email_id and password_key:
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False})
 
 if __name__ == '__main__':
     app.run(debug=True)

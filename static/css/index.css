@@ -20,6 +20,7 @@ header {
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 header h1 {
@@ -68,16 +69,18 @@ nav ul li a:hover {
     border: 2px solid #ddd;
     text-align: center;
 }
-.header{
+
+.header {
     background: white;
 }
-h1{
+
+h1 {
     color: black;
     text-align: center;
     margin-top: 20px;
     margin-bottom: 20px;
-
 }
+
 /* Button Styles */
 button {
     padding: 12px 24px;
@@ -119,13 +122,22 @@ h2 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    animation: fadeIn 2s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .file-input-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
-/* Style the input file button */
 .file-input-container input[type="file"] {
     display: none;
 }
@@ -140,6 +152,15 @@ h2 {
 }
 
 .file-input-container label:hover {
+    background-color: #0056b3;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
     background-color: #0056b3;
 }
 

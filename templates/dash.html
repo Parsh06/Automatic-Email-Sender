@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,7 +12,6 @@
             padding: 0;
             background-color: #f2f2f2;
         }
-
         .container {
             max-width: 600px;
             margin: 50px auto;
@@ -21,13 +21,11 @@
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
         h1 {
             text-align: center;
             margin-bottom: 20px;
             color: #007bff;
         }
-
         input[type="submit"] {
             display: block;
             margin-top: 20px;
@@ -40,11 +38,9 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
-
         textarea {
             width: 100%;
             padding: 10px;
@@ -53,17 +49,14 @@
             border-radius: 5px;
             resize: vertical;
         }
-
         .message-container {
             margin-top: 20px;
         }
-
         .message-container label {
             display: block;
             margin-bottom: 5px;
             color: #333;
         }
-
         .message-container textarea {
             width: 100%;
             padding: 10px;
@@ -107,8 +100,7 @@
                 if (response.ok) {
                     alert("Thank you! Your form is submitted successfully.");
                     form.reset(); // Reset the form
-                    // Close the window after the alert is closed
-                    window.close();
+                    window.close(); // Close the window after the alert is closed
                 } else {
                     alert("There was a problem submitting your form. Please try again later.");
                 }

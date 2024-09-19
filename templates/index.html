@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Falcon X</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/css/index.css">
 </head>
 <body>
@@ -12,7 +13,7 @@
     </header>
     <main>
         <div id="home" class="section">
-            <div class="container">
+            <div class="container text-center">
                 <h2>Welcome to Falcon X</h2>
                 <p>Welcome to Falcon X, your premier destination for cutting-edge technology solutions and services.</p>
                 <p>At Falcon X, we strive to revolutionize the way businesses operate by providing innovative solutions tailored to meet your specific needs.</p>
@@ -21,71 +22,114 @@
                 <p>Explore our website to learn more about our products, services, and how Falcon X can help propel your business to new heights.</p>
             </div>
         </div>
-        
+        <div id="email-credentials" class="section bg-light">
+            <div class="container">
+                <h2 class="text-center">Email Credentials</h2>
+                <form id="email-credentials-form" class="w-50 mx-auto">
+                    <div class="form-group">
+                        <label for="email_id">Email ID:</label>
+                        <input type="email" class="form-control" id="email_id" name="email_id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password_key">Password Key:</label>
+                        <input type="password" class="form-control" id="password_key" name="password_key" required>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-block" id="set-email-credentials-btn">OK</button>
+                </form>
+            </div>
+        </div>
         <div id="data" class="section">
             <div class="container">
-                <h2>Data</h2>
+                <h2 class="text-center">Data</h2>
                 <div class="container_animated">
                     <form id="upload-form" enctype="multipart/form-data">
                         <div class="file-input-container">
-                            <!-- Choose file input -->
                             <input type="file" id="csv-file" name="csv-file" accept=".csv" style="display: none;">
-                            <label for="csv-file" id="choose-file-btn">Choose CSV File</label>
-                            <button id="upload-btn" type="button">Upload CSV</button>
+                            <label for="csv-file" id="choose-file-btn" class="btn btn-primary">Choose CSV File</label>
+                            <button id="upload-btn" type="button" class="btn btn-primary">Upload CSV</button>
                         </div>
                     </form>
-                    <!-- Centered Button -->
-                    <div style="text-align: center;">
-                        <button id="send-email-btn" type="button" style="display: none;">Send Emails</button>
+                    <div class="text-center mt-4">
+                        <button id="send-email-btn" type="button" class="btn btn-primary" style="display: none;">Send Emails</button>
                     </div>
-                    <button id="download-csv-btn" type="button">Download Updated CSV</button>
+                    <div class="text-center mt-4">
+                        <button id="download-csv-btn" type="button" class="btn btn-primary">Download Updated CSV</button>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="../static/js/index.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const chooseFileBtn = document.getElementById('choose-file-btn');
-            const fileInput = document.getElementById('csv-file');
-            const uploadBtn = document.getElementById('upload-btn');
-            const sendEmailBtn = document.getElementById('send-email-btn');
-
-            // Event listener for "Choose CSV File" button
-            chooseFileBtn.addEventListener('click', function() {
-                fileInput.click();
-            });
-
-            // Event listener for file input change
-            fileInput.addEventListener('change', function() {
-                // Disable "Choose CSV File" button after file selection
-                chooseFileBtn.disabled = true;
-            });
-
-            // Event listener for "Upload CSV" button
-            uploadBtn.addEventListener('click', function() {
-                const selectedFile = fileInput.files[0];
-                if (selectedFile) {
-                    // Check if the selected file is a CSV file
-                    const fileName = selectedFile.name;
-                    const fileExtension = fileName.split('.').pop().toLowerCase();
-                    if (fileExtension === 'csv') {
-                        // Handle file upload process
-                        alert('File uploaded successfully.');
-                        // Show "Send Emails" button
-                        sendEmailBtn.style.display = 'block';
-                    } else {
-                        alert('Please select a CSV file.');
+            // Check if email credentials are set
+            fetch('/check_email_credentials')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('send-email-btn').style.display = 'block';
                     }
-                } else {
-                    alert('Please choose a file.');
-                }
+                });
+
+            document.getElementById('set-email-credentials-btn').addEventListener('click', function() {
+                const email = document.getElementById('email_id').value;
+                const password = document.getElementById('password_key').value;
+                fetch('/set_email_credentials', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email_id: email, password_key: password })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Email credentials set successfully!');
+                        document.getElementById('send-email-btn').style.display = 'block';
+                    } else {
+                        alert('Error setting email credentials.');
+                    }
+                });
             });
 
-            // Event listener for "Send Emails" button
-            sendEmailBtn.addEventListener('click', function() {
-                // Here you can add logic to send emails
-                alert('Your emails have been sent.');
+            document.getElementById('upload-btn').addEventListener('click', function() {
+                const fileInput = document.getElementById('csv-file');
+                const formData = new FormData();
+                formData.append('csv-file', fileInput.files[0]);
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('File uploaded successfully!');
+                        document.getElementById('send-email-btn').style.display = 'block';
+                    } else {
+                        alert('Error uploading file.');
+                    }
+                });
+            });
+
+            document.getElementById('send-email-btn').addEventListener('click', function() {
+                fetch('/send_email', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Emails sent successfully!');
+                    } else {
+                        alert('Error sending emails.');
+                    }
+                });
+            });
+
+            document.getElementById('download-csv-btn').addEventListener('click', function() {
+                window.location.href = '/download_csv';
             });
         });
     </script>
